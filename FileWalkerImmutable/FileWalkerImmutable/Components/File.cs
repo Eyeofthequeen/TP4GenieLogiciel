@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FileWalkerImmutable
 {
-    public class File : IFile
+    class File : IFile
     {
         public string Name { get; }
         public Guid ID { get; }

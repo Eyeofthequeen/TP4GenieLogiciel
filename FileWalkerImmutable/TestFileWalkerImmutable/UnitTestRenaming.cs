@@ -6,36 +6,40 @@ namespace TestFileWalkerImmutable
     [TestClass]
     public class RenamingTests
     {
-        private File file;
-        private Folder folder;
+        private FileSystemFacade fileSys;
 
         [TestInitialize]
         public void Setup()
         {
-            file = new File("test", 100, "contenu du fichier.");
-            folder = new Folder("test");
+            fileSys = new FileSystemFacade();
         }
 
         [TestMethod]
-        public void TestWhenRenamingFileRetuningNewComponentFileOfTypeWithNewNameAndSameId()
+        public void TestWhenPathExistThenFileIsRetrived()
         {
-            string nameFile = "testing";
-            IComponent newFile = file.Rename(nameFile);
+            IComponent folder = fileSys.CreateFolder("testFolder");
+            IComponent secondFolder = fileSys.CreateFolder("testInsideTestFolder");
+            IComponent file = fileSys.CreateFile("testFile", 10, "This is text content.");
 
-            Assert.AreEqual(file.GetType(), newFile.GetType());
-            Assert.AreNotEqual(newFile.Name, file.Name);
-            Assert.AreEqual(newFile.ID, file.ID);
+            fileSys.AddChildren(folder, secondFolder);
+            fileSys.AddChildren(secondFolder, file);
+
+            IComponent retrivedFile = fileSys.GetComponentByPath(folder, secondFolder.Name, file.Name);
+            Assert.AreEqual(retrivedFile.Name, "testFile");
         }
 
         [TestMethod]
-        public void TestWhenRenamingFolderReturningNewFolderWithNewNameAndSameId()
+        public void TestWhenPathDoestExistThenFileIsNotRetrived()
         {
-            string nameFolder = "testing";
-            IComponent newFolder = folder.Rename(nameFolder);
+            IComponent folder = fileSys.CreateFolder("testFolder");
+            IComponent secondFolder = fileSys.CreateFolder("testInsideTestFolder");
+            IComponent file = fileSys.CreateFile("testFile", 10, "This is text content.");
 
-            Assert.AreEqual(folder.GetType(), newFolder.GetType());
-            Assert.AreNotEqual(newFolder.Name, file.Name);
-            Assert.AreEqual(newFolder.ID, folder.ID);
+            fileSys.AddChildren(folder, secondFolder);
+            fileSys.AddChildren(secondFolder, file);
+
+            IComponent retrivedFile = fileSys.GetComponentByPath(folder, file.Name);
+            Assert.AreEqual(retrivedFile, null);
         }
     }
 }

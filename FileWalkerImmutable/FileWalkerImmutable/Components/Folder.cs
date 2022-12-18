@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FileWalkerImmutable
 {
-    public class Folder : IFolder
+    class Folder : IFolder
     {
         public string Name { get; }
         public Guid ID { get; }

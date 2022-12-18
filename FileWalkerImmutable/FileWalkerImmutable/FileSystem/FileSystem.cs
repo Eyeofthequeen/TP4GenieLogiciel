@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FileWalkerImmutable
 {
-    class FileSystem
+    public class FileSystem
     {
         private ImmutableDictionary<Guid, ImmutableList<IComponent>> Map { get; }
         private ImmutableDictionary<Guid, ImmutableList<IComponentObserver>> Observers { get; }
