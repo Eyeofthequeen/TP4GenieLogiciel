@@ -136,6 +136,21 @@ namespace TestFileWalkerImmutable
         }
 
         [TestMethod]
+        public void TestWhenFileIsCascadedInsideIsDeletedRetrivingItIsNotPossible()
+        {
+            fileSys.AddChildren(root, secondFolder);
+            fileSys.AddChildren(secondFolder, thirdFolder);
+            fileSys.AddChildren(thirdFolder, file);
+
+            IComponent retrivedFile = fileSys.GetComponentByPath(root, secondFolder.Name, thirdFolder.Name, file.Name);
+            Assert.AreEqual(retrivedFile, file);
+
+            fileSys.Delete(retrivedFile);
+            Assert.IsNull(fileSys.GetComponentByPath(root, secondFolder.Name, thirdFolder.Name, file.Name));
+
+        }
+
+        [TestMethod]
         public void TestWhenFolderIsDeletedRetrivingItIsNotPossible()
         {
             fileSys.AddChildren(root, secondFolder, thirdFolder, file);
@@ -145,6 +160,23 @@ namespace TestFileWalkerImmutable
 
             fileSys.Delete(retrivedFolder);
             Assert.IsNull(fileSys.GetComponentByPath(root, thirdFolder.Name));
+        }
+
+
+        [TestMethod]
+        public void TestWhenFolderIsCascadedInsideIsDeletedRetrivingItIsNotPossible()
+        {
+            IComponent otherFolder = fileSys.CreateFolder("otherFolder");
+            
+            fileSys.AddChildren(root, secondFolder);
+            fileSys.AddChildren(secondFolder, thirdFolder);
+            fileSys.AddChildren(thirdFolder, otherFolder, file);
+
+            IComponent retrivedFolder = fileSys.GetComponentByPath(root, secondFolder.Name, thirdFolder.Name, otherFolder.Name);
+            Assert.AreEqual(retrivedFolder, otherFolder);
+
+            fileSys.Delete(retrivedFolder);
+            Assert.IsNull(fileSys.GetComponentByPath(root, secondFolder.Name, thirdFolder.Name, otherFolder.Name));
         }
     }
 }
