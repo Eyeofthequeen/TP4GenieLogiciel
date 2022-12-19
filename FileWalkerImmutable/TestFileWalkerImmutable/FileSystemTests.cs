@@ -48,7 +48,7 @@ namespace TestFileWalkerImmutable
         }
 
         [TestMethod]
-        public void TestWhenPathDoestExistThenFileIsNotRetrived()
+        public void TestWhenPathDoesntExistThenFileIsNotRetrived()
         {
             fileSys.AddChildren(root, secondFolder);
             fileSys.AddChildren(secondFolder, file);
@@ -58,7 +58,7 @@ namespace TestFileWalkerImmutable
         }
 
         [TestMethod]
-        public void TestWhenPathDoestExistThenFolderIsNotRetrived()
+        public void TestWhenPathDoesntExistThenFolderIsNotRetrived()
         {
             fileSys.AddChildren(root, secondFolder);
             fileSys.AddChildren(secondFolder, thirdFolder);
