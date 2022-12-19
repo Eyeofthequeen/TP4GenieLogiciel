@@ -238,5 +238,40 @@ namespace TestFileWalkerImmutable
             string wantedReturn = $"{thirdFolder.Name} was deleted.";
             Assert.AreEqual(fileSys.NotificationLog.Peek(), wantedReturn);
         }
+
+        [TestMethod] // Ce test nous a permis de constater qu'il manquait une validation à la ligne 92 du fichier FileSystem.cs
+        // Permettant de continuer la bouche si le IComponent est un fichier.
+        public void TestWhenFileIsChangedManyTimesAndNotifyOnChangeHadBeenSetLogIsUpdated()
+        {
+            fileSys.AddChildren(root, secondFolder);
+            fileSys.AddChildren(secondFolder, thirdFolder, file);
+
+            fileSys.NotifyOnChange(file);
+
+            string newName = "fileRenamed";
+            fileSys.Rename(file, newName);
+            IComponent retrivedFile = fileSys.GetComponentByPath(root, secondFolder.Name, newName);
+
+            fileSys.Delete(retrivedFile);
+
+            Assert.AreEqual(fileSys.NotificationLog.Count, 2);
+        }
+
+        [TestMethod]
+        public void TestWhenFolderIsChangedManyTimesAndNotifyOnChangedHadBeenSetLogIsUpdated()
+        {
+            fileSys.AddChildren(root, secondFolder);
+            fileSys.AddChildren(secondFolder, thirdFolder);
+            fileSys.AddChildren(thirdFolder, file);
+
+            fileSys.NotifyOnChange(thirdFolder);
+
+            string newName = "thirdFolderRenamed";
+            fileSys.Rename(thirdFolder, newName);
+            IComponent retrivedFile = fileSys.GetComponentByPath(root, secondFolder.Name, newName);
+
+            fileSys.Delete(retrivedFile);
+            Assert.AreEqual(fileSys.NotificationLog.Count, 2);
+        }
     }
 }

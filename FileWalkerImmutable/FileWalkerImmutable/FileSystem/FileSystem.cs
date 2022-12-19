@@ -89,6 +89,8 @@ namespace FileWalkerImmutable
             builder.Remove(component.ID);
             foreach(var kvp in fs.Map)
             {
+                if (kvp.Value == null) { continue; }
+
                 if (kvp.Value.Contains(component))
                     builder[kvp.Key] = kvp.Value.Remove(component);
             }
