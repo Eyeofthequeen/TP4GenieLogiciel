@@ -178,5 +178,65 @@ namespace TestFileWalkerImmutable
             fileSys.Delete(retrivedFolder);
             Assert.IsNull(fileSys.GetComponentByPath(root, secondFolder.Name, thirdFolder.Name, otherFolder.Name));
         }
+
+        // -------------------------------- Notifying --------------------------------
+
+        [TestMethod]
+        public void TestWhenFileIsRenamedAndNotifyOnChangeHasBeenSetLogIsUpdated()
+        {
+            fileSys.AddChildren(root, secondFolder);
+            fileSys.AddChildren(secondFolder, file);
+
+            fileSys.NotifyOnChange(file);
+
+            string newName = "folderRenamed";
+            fileSys.Rename(file, newName);
+
+            string wantedReturn = $"{file.Name} was renamed to {newName}.";
+            Assert.AreEqual(fileSys.NotificationLog.Peek(), wantedReturn);
+        }
+
+        [TestMethod]
+        public void TestWhenFolderIsRenamedAndNotifyOnChangeHasBeenSetLogIsUpdated()
+        {
+            fileSys.AddChildren(root, secondFolder);
+            fileSys.AddChildren(secondFolder, thirdFolder, file);
+
+            fileSys.NotifyOnChange(thirdFolder);
+
+            string newName = "thirdFolderRenamed";
+            fileSys.Rename(thirdFolder, newName);
+
+            string wantedReturn = $"{thirdFolder.Name} was renamed to {newName}.";
+            Assert.AreEqual(fileSys.NotificationLog.Peek(), wantedReturn);
+        }
+
+        [TestMethod]
+        public void TestWhenFileIsDeletedAndNotifiyOnChangeHasBeenSetLogIsUpdated()
+        {
+            fileSys.AddChildren(root, secondFolder);
+            fileSys.AddChildren(secondFolder, file);
+
+            fileSys.NotifyOnChange(file);
+
+            fileSys.Delete(file);
+
+            string wantedReturn = $"{file.Name} was deleted.";
+            Assert.AreEqual(fileSys.NotificationLog.Peek(), wantedReturn);
+        }
+
+        [TestMethod]
+        public void TestWhenFolderIsDeletedAndNotifiyOnChangeHasBeenSetLogIsUpdated()
+        {
+            fileSys.AddChildren(root, secondFolder);
+            fileSys.AddChildren(secondFolder, thirdFolder, file);
+
+            fileSys.NotifyOnChange(thirdFolder);
+
+            fileSys.Delete(thirdFolder);
+
+            string wantedReturn = $"{thirdFolder.Name} was deleted.";
+            Assert.AreEqual(fileSys.NotificationLog.Peek(), wantedReturn);
+        }
     }
 }
